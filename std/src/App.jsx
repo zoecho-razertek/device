@@ -65,7 +65,12 @@ import imgAddonData    from './assets/img_addon_data.png'
 import imgSuccess      from './assets/img_success.png'
 import imgCateye        from './assets/img_cateye.png'
 import imgResetFolder    from './assets/img_reset_folder.png'
+import imgAddMkey        from './assets/img_addmkey.png'
+import imgScanMkey       from './assets/img_scanmkey.png'
 import imgSystemLanding  from './assets/img_system_landing.png'
+import imgAddFinger      from './assets/img_addfinger.png'
+import imgAddFace        from './assets/img_addface.png'
+import imgAddHand        from './assets/img_addhand.png'
 
 const disconnectBadges = (
   <>
@@ -78,7 +83,7 @@ function HomePage({ setPage, wifiOk }) {
   return (
     <div className="page">
       <img src={wifiOk ? imgHomeLock : imgHomeDisconnect} className="page-bg" alt="" />
-      <img src={wifiOk ? imgWifiOn : imgWifiOff} alt="" style={{ position: 'absolute', left: 16, top: 16, width: 28, height: 28, pointerEvents: 'none' }} />
+      <img src={wifiOk ? imgWifiOn : imgWifiOff} alt="" style={{ position: 'absolute', left: 16, top: 14, width: 28, height: 28, pointerEvents: 'none' }} />
       {!wifiOk && disconnectBadges}
       <div className="touch-area" style={{ left: 210, top: 292, width: 70,  height: 66  }} onClick={() => setPage('login')}       />
       <div className="touch-area" style={{ left: 21,  top: 76,  width: 281, height: 214 }} onClick={() => setPage('home_unlock')} />
@@ -91,7 +96,7 @@ function HomeUnlockPage({ setPage, wifiOk }) {
   return (
     <div className="page">
       <img src={wifiOk ? imgHomeUnlock : imgHomeDisconnect} className="page-bg" alt="" />
-      <img src={wifiOk ? imgWifiOn : imgWifiOff} alt="" style={{ position: 'absolute', left: 16, top: 16, width: 28, height: 28, pointerEvents: 'none' }} />
+      <img src={wifiOk ? imgWifiOn : imgWifiOff} alt="" style={{ position: 'absolute', left: 16, top: 14, width: 28, height: 28, pointerEvents: 'none' }} />
       {!wifiOk && disconnectBadges}
       <div className="touch-area" style={{ left: 210, top: 292, width: 70,  height: 66  }} onClick={() => setPage('login')}      />
       <div className="touch-area" style={{ left: 21,  top: 76,  width: 281, height: 214 }} onClick={() => setPage('home')}       />
@@ -104,7 +109,7 @@ function ImagePage({ src, onBack, onLogin, wifiOk }) {
   return (
     <div className="page" onClick={onBack}>
       <img src={wifiOk ? src : imgHomeDisconnect} className="page-bg" alt="" />
-      <img src={wifiOk ? imgWifiOn : imgWifiOff} alt="" style={{ position: 'absolute', left: 16, top: 16, width: 28, height: 28, pointerEvents: 'none' }} />
+      <img src={wifiOk ? imgWifiOn : imgWifiOff} alt="" style={{ position: 'absolute', left: 16, top: 14, width: 28, height: 28, pointerEvents: 'none' }} />
       {!wifiOk && disconnectBadges}
       {onLogin && (
         <div className="touch-area" style={{ left: 210, top: 292, width: 70, height: 66 }}
@@ -496,10 +501,13 @@ function KeyManagementPage({ onBack, setPage }) {
       <div className="ss-grid">
         {KEY_ITEMS.map((item) => (
           <div key={item.id} className="ss-cell"
-            style={{ cursor: item.id === 'card' || item.id === 'mkey' ? 'pointer' : undefined }}
+            style={{ cursor: ['card','mkey','finger','face','hand'].includes(item.id) ? 'pointer' : undefined }}
             onClick={
-              item.id === 'card' ? () => setPage('card_management') :
-              item.id === 'mkey' ? () => setPage('mkey_management') :
+              item.id === 'card'   ? () => setPage('card_management') :
+              item.id === 'mkey'   ? () => setPage('mkey_management') :
+              item.id === 'finger' ? () => setPage('finger_management') :
+              item.id === 'face'   ? () => setPage('face_management') :
+              item.id === 'hand'   ? () => setPage('hand_management') :
               undefined
             }
           >
@@ -515,7 +523,310 @@ function KeyManagementPage({ onBack, setPage }) {
   )
 }
 
-function MkeyManagementPage({ onBack }) {
+function FingerAddPage({ setPage }) {
+  const [progress, setProgress] = useState(100)
+  const [toast, setToast] = useState(false)
+  const intervalRef = useRef(null)
+  function finish() {
+    clearInterval(intervalRef.current)
+    setToast(true)
+    setTimeout(() => setPage('finger_management'), 1500)
+  }
+  useEffect(() => {
+    setProgress(100)
+    intervalRef.current = setInterval(() => {
+      setProgress(p => { if (p <= 1) { clearInterval(intervalRef.current); finish(); return 0 } return p - 1 })
+    }, 100)
+    return () => clearInterval(intervalRef.current)
+  }, [])
+  return (
+    <div className="pq-page" onClick={finish} style={{ cursor: 'pointer' }}>
+      <div className="ss-titlebar" style={{ position: 'absolute', top: 0, left: 0, right: 0 }}>
+        <div style={{ width: 40 }} />
+        <span className="ss-title">新增指紋</span>
+        <div style={{ width: 40 }} />
+      </div>
+      <img src={imgAddFinger} alt="" style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: 101, width: 200, height: 200, objectFit: 'contain' }} />
+      <div style={{ position: 'absolute', top: 325, left: 0, right: 0, bottom: 0, background: '#fff', borderRadius: '42px 42px 0 0', boxShadow: '0 -20px 50px rgba(0,0,0,0.15)' }} />
+      <p style={{ position: 'absolute', left: 40, right: 40, bottom: 90, transform: 'translateY(50%)', fontSize: 16, color: '#333', lineHeight: 1.7, zIndex: 1, textAlign: 'center' }}>
+        請將手指放置於 MH Lock 的<br />指紋感應器上進行新增。<br />當聽到逼聲時，即表示新增成功。
+      </p>
+      <div style={{ position: 'absolute', left: 40, top: 443, width: 231, height: 6, borderRadius: 3, background: '#d9d9d9', zIndex: 1 }}>
+        <div style={{ width: `${progress}%`, height: '100%', borderRadius: 3, background: '#2880c2', transition: 'width 0.1s linear' }} />
+      </div>
+      {toast && <div className="toast" style={{ zIndex: 2 }}>指紋新增成功！</div>}
+    </div>
+  )
+}
+
+const DEMO_FINGERS = [
+  { name: '指紋01' },
+]
+
+function FingerManagementPage({ onBack, setPage, setSelectedFinger }) {
+  return (
+    <div className="ss-page">
+      <div className="ss-titlebar">
+        <button className="ss-back-btn" onClick={onBack}>
+          <img src={btnCircle} alt="" width="40" height="40" />
+        </button>
+        <span className="ss-title">指紋管理</span>
+        <div style={{ width: 40 }} />
+      </div>
+      <div style={{ flex: 1, overflowY: 'auto' }}>
+        <div className="cl-list">
+          <div className="cl-row" style={{ cursor: 'pointer' }} onClick={() => setPage('finger_add')}>
+            <span className="cl-row-label">新增指紋</span>
+            <PlusIcon />
+          </div>
+          {DEMO_FINGERS.map((item, i) => (
+            <div key={i} className="cl-row" style={{ cursor: 'pointer' }}
+              onClick={() => { setSelectedFinger(item); setPage('finger_delete') }}>
+              <span className="cl-row-label">名稱：{item.name}</span>
+              <TrashIcon />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function FingerDeletePage({ onBack, item, setPage }) {
+  const [toast, setToast] = useState(false)
+
+  function handleDelete() {
+    setToast(true)
+    setTimeout(() => setPage('finger_management'), 1500)
+  }
+
+  return (
+    <div style={{ width: 320, height: 480, background: '#e8f2f7', position: 'relative' }}>
+      <div className="ss-titlebar">
+        <div style={{ width: 40 }} />
+        <span className="ss-title">刪除開鎖方式</span>
+        <div style={{ width: 40 }} />
+      </div>
+      <div style={{ position: 'absolute', top: 117, left: 26, width: 268, display: 'flex', flexDirection: 'column', gap: 36 }}>
+        <div style={{ background: '#fff', borderRadius: 8, padding: '12px 16px' }}>
+          <span style={{ fontSize: 16, color: '#666' }}>名稱：{item?.name}</span>
+        </div>
+        <p style={{ fontSize: 16, color: '#333', lineHeight: 1.7 }}>
+          確定要刪除此解鎖工具嗎？<br />刪除後，將無法再用此工具開啟這台電子鎖。
+        </p>
+      </div>
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, display: 'flex', height: 60 }}>
+        <button onClick={onBack} style={{ flex: 1, border: 'none', background: '#666', fontSize: 20, color: '#fff', cursor: 'pointer' }}>取消</button>
+        <button onClick={handleDelete} style={{ flex: 1, border: 'none', background: '#dd330d', fontSize: 20, color: '#fff', cursor: 'pointer' }}>刪除</button>
+      </div>
+      {toast && <div className="toast" style={{ zIndex: 2 }}>指紋已刪除！</div>}
+    </div>
+  )
+}
+
+function FaceAddPage({ setPage }) {
+  const [progress, setProgress] = useState(100)
+  const [toast, setToast] = useState(false)
+  const intervalRef = useRef(null)
+  function finish() {
+    clearInterval(intervalRef.current)
+    setToast(true)
+    setTimeout(() => setPage('face_management'), 1500)
+  }
+  useEffect(() => {
+    setProgress(100)
+    intervalRef.current = setInterval(() => {
+      setProgress(p => { if (p <= 1) { clearInterval(intervalRef.current); finish(); return 0 } return p - 1 })
+    }, 100)
+    return () => clearInterval(intervalRef.current)
+  }, [])
+  return (
+    <div className="pq-page" onClick={finish} style={{ cursor: 'pointer' }}>
+      <div className="ss-titlebar" style={{ position: 'absolute', top: 0, left: 0, right: 0 }}>
+        <div style={{ width: 40 }} />
+        <span className="ss-title">新增臉部資料</span>
+        <div style={{ width: 40 }} />
+      </div>
+      <img src={imgAddFace} alt="" style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: 101, width: 200, height: 200, objectFit: 'contain' }} />
+      <div style={{ position: 'absolute', top: 325, left: 0, right: 0, bottom: 0, background: '#fff', borderRadius: '42px 42px 0 0', boxShadow: '0 -20px 50px rgba(0,0,0,0.15)' }} />
+      <p style={{ position: 'absolute', left: 40, right: 40, bottom: 90, transform: 'translateY(50%)', fontSize: 16, color: '#333', lineHeight: 1.7, zIndex: 1, textAlign: 'center' }}>
+        請站在 MH Lock 的<br />臉部掃描鏡頭前進行新增。<br />當聽到逼聲時，即表示新增成功。
+      </p>
+      <div style={{ position: 'absolute', left: 40, top: 443, width: 231, height: 6, borderRadius: 3, background: '#d9d9d9', zIndex: 1 }}>
+        <div style={{ width: `${progress}%`, height: '100%', borderRadius: 3, background: '#2880c2', transition: 'width 0.1s linear' }} />
+      </div>
+      {toast && <div className="toast" style={{ zIndex: 2 }}>臉部資料新增成功！</div>}
+    </div>
+  )
+}
+
+const DEMO_FACES = [
+  { name: '臉部資料01' },
+]
+
+function FaceManagementPage({ onBack, setPage, setSelectedFace }) {
+  return (
+    <div className="ss-page">
+      <div className="ss-titlebar">
+        <button className="ss-back-btn" onClick={onBack}>
+          <img src={btnCircle} alt="" width="40" height="40" />
+        </button>
+        <span className="ss-title">臉部資料管理</span>
+        <div style={{ width: 40 }} />
+      </div>
+      <div style={{ flex: 1, overflowY: 'auto' }}>
+        <div className="cl-list">
+          <div className="cl-row" style={{ cursor: 'pointer' }} onClick={() => setPage('face_add')}>
+            <span className="cl-row-label">新增臉部資料</span>
+            <PlusIcon />
+          </div>
+          {DEMO_FACES.map((item, i) => (
+            <div key={i} className="cl-row" style={{ cursor: 'pointer' }}
+              onClick={() => { setSelectedFace(item); setPage('face_delete') }}>
+              <span className="cl-row-label">名稱：{item.name}</span>
+              <TrashIcon />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function FaceDeletePage({ onBack, item, setPage }) {
+  const [toast, setToast] = useState(false)
+
+  function handleDelete() {
+    setToast(true)
+    setTimeout(() => setPage('face_management'), 1500)
+  }
+
+  return (
+    <div style={{ width: 320, height: 480, background: '#e8f2f7', position: 'relative' }}>
+      <div className="ss-titlebar">
+        <div style={{ width: 40 }} />
+        <span className="ss-title">刪除開鎖方式</span>
+        <div style={{ width: 40 }} />
+      </div>
+      <div style={{ position: 'absolute', top: 117, left: 26, width: 268, display: 'flex', flexDirection: 'column', gap: 36 }}>
+        <div style={{ background: '#fff', borderRadius: 8, padding: '12px 16px' }}>
+          <span style={{ fontSize: 16, color: '#666' }}>名稱：{item?.name}</span>
+        </div>
+        <p style={{ fontSize: 16, color: '#333', lineHeight: 1.7 }}>
+          確定要刪除此解鎖工具嗎？<br />刪除後，將無法再用此工具開啟這台電子鎖。
+        </p>
+      </div>
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, display: 'flex', height: 60 }}>
+        <button onClick={onBack} style={{ flex: 1, border: 'none', background: '#666', fontSize: 20, color: '#fff', cursor: 'pointer' }}>取消</button>
+        <button onClick={handleDelete} style={{ flex: 1, border: 'none', background: '#dd330d', fontSize: 20, color: '#fff', cursor: 'pointer' }}>刪除</button>
+      </div>
+      {toast && <div className="toast" style={{ zIndex: 2 }}>臉部資料已刪除！</div>}
+    </div>
+  )
+}
+
+function HandAddPage({ setPage }) {
+  const [progress, setProgress] = useState(100)
+  const [toast, setToast] = useState(false)
+  const intervalRef = useRef(null)
+  function finish() {
+    clearInterval(intervalRef.current)
+    setToast(true)
+    setTimeout(() => setPage('hand_management'), 1500)
+  }
+  useEffect(() => {
+    setProgress(100)
+    intervalRef.current = setInterval(() => {
+      setProgress(p => { if (p <= 1) { clearInterval(intervalRef.current); finish(); return 0 } return p - 1 })
+    }, 100)
+    return () => clearInterval(intervalRef.current)
+  }, [])
+  return (
+    <div className="pq-page" onClick={finish} style={{ cursor: 'pointer' }}>
+      <div className="ss-titlebar" style={{ position: 'absolute', top: 0, left: 0, right: 0 }}>
+        <div style={{ width: 40 }} />
+        <span className="ss-title">新增掌靜脈</span>
+        <div style={{ width: 40 }} />
+      </div>
+      <img src={imgAddHand} alt="" style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: 101, width: 200, height: 200, objectFit: 'contain' }} />
+      <div style={{ position: 'absolute', top: 325, left: 0, right: 0, bottom: 0, background: '#fff', borderRadius: '42px 42px 0 0', boxShadow: '0 -20px 50px rgba(0,0,0,0.15)' }} />
+      <p style={{ position: 'absolute', left: 40, right: 40, bottom: 90, transform: 'translateY(50%)', fontSize: 16, color: '#333', lineHeight: 1.7, zIndex: 1, textAlign: 'center' }}>
+        請將手掌打開，在 MH Lock<br />掌靜脈掃描鏡頭前進行新增。<br />當聽到逼聲時，即表示新增成功。
+      </p>
+      <div style={{ position: 'absolute', left: 40, top: 443, width: 231, height: 6, borderRadius: 3, background: '#d9d9d9', zIndex: 1 }}>
+        <div style={{ width: `${progress}%`, height: '100%', borderRadius: 3, background: '#2880c2', transition: 'width 0.1s linear' }} />
+      </div>
+      {toast && <div className="toast" style={{ zIndex: 2 }}>掌靜脈新增成功！</div>}
+    </div>
+  )
+}
+
+const DEMO_HANDS = [
+  { name: '掌靜脈01' },
+]
+
+function HandManagementPage({ onBack, setPage, setSelectedHand }) {
+  return (
+    <div className="ss-page">
+      <div className="ss-titlebar">
+        <button className="ss-back-btn" onClick={onBack}>
+          <img src={btnCircle} alt="" width="40" height="40" />
+        </button>
+        <span className="ss-title">掌靜脈管理</span>
+        <div style={{ width: 40 }} />
+      </div>
+      <div style={{ flex: 1, overflowY: 'auto' }}>
+        <div className="cl-list">
+          <div className="cl-row" style={{ cursor: 'pointer' }} onClick={() => setPage('hand_add')}>
+            <span className="cl-row-label">新增掌靜脈</span>
+            <PlusIcon />
+          </div>
+          {DEMO_HANDS.map((item, i) => (
+            <div key={i} className="cl-row" style={{ cursor: 'pointer' }}
+              onClick={() => { setSelectedHand(item); setPage('hand_delete') }}>
+              <span className="cl-row-label">名稱：{item.name}</span>
+              <TrashIcon />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function HandDeletePage({ onBack, item, setPage }) {
+  const [toast, setToast] = useState(false)
+
+  function handleDelete() {
+    setToast(true)
+    setTimeout(() => setPage('hand_management'), 1500)
+  }
+
+  return (
+    <div style={{ width: 320, height: 480, background: '#e8f2f7', position: 'relative' }}>
+      <div className="ss-titlebar">
+        <div style={{ width: 40 }} />
+        <span className="ss-title">刪除開鎖方式</span>
+        <div style={{ width: 40 }} />
+      </div>
+      <div style={{ position: 'absolute', top: 117, left: 26, width: 268, display: 'flex', flexDirection: 'column', gap: 36 }}>
+        <div style={{ background: '#fff', borderRadius: 8, padding: '12px 16px' }}>
+          <span style={{ fontSize: 16, color: '#666' }}>名稱：{item?.name}</span>
+        </div>
+        <p style={{ fontSize: 16, color: '#333', lineHeight: 1.7 }}>
+          確定要刪除此解鎖工具嗎？<br />刪除後，將無法再用此工具開啟這台電子鎖。
+        </p>
+      </div>
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, display: 'flex', height: 60 }}>
+        <button onClick={onBack} style={{ flex: 1, border: 'none', background: '#666', fontSize: 20, color: '#fff', cursor: 'pointer' }}>取消</button>
+        <button onClick={handleDelete} style={{ flex: 1, border: 'none', background: '#dd330d', fontSize: 20, color: '#fff', cursor: 'pointer' }}>刪除</button>
+      </div>
+      {toast && <div className="toast" style={{ zIndex: 2 }}>掌靜脈已刪除！</div>}
+    </div>
+  )
+}
+
+function MkeyManagementPage({ onBack, setPage }) {
   const [toggleOn, setToggleOn] = useState(true)
 
   return (
@@ -529,7 +840,17 @@ function MkeyManagementPage({ onBack }) {
       </div>
       <div className="ss-grid">
         {MKEY_ITEMS.map((item) => (
-          <div key={item.id} className="ss-cell">
+          <div key={item.id} className="ss-cell"
+            style={['list','add','pin','search','lock'].includes(item.id) ? { cursor: 'pointer' } : undefined}
+            onClick={
+              item.id === 'list'   ? () => setPage('mkey_list') :
+              item.id === 'add'    ? () => setPage('mkey_add') :
+              item.id === 'pin'    ? () => setPage('mkey_change_pin_scan') :
+              item.id === 'search' ? () => setPage('mkey_search_scan') :
+              item.id === 'lock'   ? () => setPage('mkey_lock_scan') :
+              undefined
+            }
+          >
             <div className="ss-cell-text">
               <span className="ss-cell-title">{item.title}</span>
               {item.sub.split('\n').map((line, i) => (
@@ -545,6 +866,440 @@ function MkeyManagementPage({ onBack }) {
           </div>
         ))}
       </div>
+    </div>
+  )
+}
+
+const DEMO_MKEYS = [
+  { name: 'M-key022222222222...', id: '3827262', time: '2025/02/20 17:22:21' },
+  { name: 'M-key03',             id: '3827262', time: '2025/02/20 17:22:21' },
+]
+
+function MkeyPinPage({ onBack, title = '請輸入 M-key PIN 碼', titleColor, onConfirm, toastText, setPage }) {
+  const [digits, setDigits] = useState([])
+  const [revealed, setRevealed] = useState(new Set())
+  const [toast, setToast] = useState(false)
+  const nextId = useRef(0)
+
+  function press(key) {
+    if (key === '返回') { onBack(); return }
+    if (key === '⌫') { setDigits(d => d.slice(0, -1)); return }
+    if (digits.length < 4) {
+      const id = nextId.current++
+      setDigits(d => [...d, { value: key, id }])
+      setRevealed(r => new Set([...r, id]))
+      setTimeout(() => setRevealed(r => { const n = new Set(r); n.delete(id); return n }), 1000)
+    }
+  }
+
+  function confirm() {
+    const code = digits.map(d => d.value).join('')
+    if (onConfirm) { onConfirm(code); return }
+    setToast(true)
+    setTimeout(() => setPage('mkey_management'), 1500)
+  }
+
+  return (
+    <div className="login-page">
+      <p className="login-title" style={titleColor ? { color: titleColor } : undefined}>{title}</p>
+      <div className="login-input">
+        {[0,1,2,3].map(i => (
+          <div key={i} className="login-slot">
+            <span className="login-char">
+              {digits[i] ? (revealed.has(digits[i].id) ? digits[i].value : '*') : ' '}
+            </span>
+            {i === digits.length && <div className="login-cursor" />}
+          </div>
+        ))}
+      </div>
+      <div className="login-pad">
+        {KEYS.map((row, ri) => (
+          <div key={ri} className="login-pad-row">
+            {row.map(k => (
+              <button key={k} className={`login-key${k === '返回' ? ' login-key--sm' : ''}`} onClick={() => press(k)}>{k}</button>
+            ))}
+          </div>
+        ))}
+      </div>
+      <button className="login-confirm" onClick={confirm}>確認</button>
+      {toast && <div className="toast" style={{ zIndex: 2 }}>{toastText || 'M-key 新增成功！'}</div>}
+    </div>
+  )
+}
+
+function MkeyChangePinConfirmPage({ onBack, expected, setPage }) {
+  const [digits, setDigits] = useState([])
+  const [revealed, setRevealed] = useState(new Set())
+  const [mismatch, setMismatch] = useState(false)
+  const [toast, setToast] = useState(false)
+  const nextId = useRef(0)
+
+  function press(key) {
+    if (key === '返回') { onBack(); return }
+    if (key === '⌫') { setDigits(d => d.slice(0, -1)); setMismatch(false); return }
+    if (digits.length < 4) {
+      const id = nextId.current++
+      setDigits(d => [...d, { value: key, id }])
+      setRevealed(r => new Set([...r, id]))
+      setTimeout(() => setRevealed(r => { const n = new Set(r); n.delete(id); return n }), 1000)
+    }
+  }
+
+  function confirm() {
+    const code = digits.map(d => d.value).join('')
+    if (code === expected) {
+      setToast(true)
+      setTimeout(() => setPage('mkey_management'), 1500)
+    } else {
+      setMismatch(true)
+      setDigits([])
+    }
+  }
+
+  const title = mismatch ? '與 M-key pin 碼不相符' : '請確認 M-key pin 碼'
+
+  return (
+    <div className="login-page">
+      <p className="login-title" style={mismatch ? { color: '#DD330D' } : undefined}>{title}</p>
+      <div className="login-input">
+        {[0,1,2,3].map(i => (
+          <div key={i} className="login-slot">
+            <span className="login-char">
+              {digits[i] ? (revealed.has(digits[i].id) ? digits[i].value : '*') : ' '}
+            </span>
+            {i === digits.length && <div className="login-cursor" />}
+          </div>
+        ))}
+      </div>
+      <div className="login-pad">
+        {KEYS.map((row, ri) => (
+          <div key={ri} className="login-pad-row">
+            {row.map(k => (
+              <button key={k} className={`login-key${k === '返回' ? ' login-key--sm' : ''}`} onClick={() => press(k)}>{k}</button>
+            ))}
+          </div>
+        ))}
+      </div>
+      <button className="login-confirm" onClick={confirm}>確認</button>
+      {toast && <div className="toast" style={{ zIndex: 2 }}>Pin 碼變更成功，請妥善保管</div>}
+    </div>
+  )
+}
+
+function MkeyChangePinScanPage({ setPage }) {
+  const [progress, setProgress] = useState(100)
+  const intervalRef = useRef(null)
+  function finish() { clearInterval(intervalRef.current); setPage('mkey_change_pin_current') }
+  useEffect(() => {
+    setProgress(100)
+    intervalRef.current = setInterval(() => {
+      setProgress(p => { if (p <= 1) { clearInterval(intervalRef.current); finish(); return 0 } return p - 1 })
+    }, 100)
+    return () => clearInterval(intervalRef.current)
+  }, [])
+  return (
+    <div className="pq-page" onClick={finish} style={{ cursor: 'pointer' }}>
+      <div className="ss-titlebar" style={{ position: 'absolute', top: 0, left: 0, right: 0 }}>
+        <div style={{ width: 40 }} />
+        <span className="ss-title">讀取 M-key</span>
+        <div style={{ width: 40 }} />
+      </div>
+      <img src={imgScanMkey} alt="" style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: 106, width: 200, height: 200, objectFit: 'contain' }} />
+      <div style={{ position: 'absolute', top: 325, left: 0, right: 0, bottom: 0, background: '#fff', borderRadius: '42px 42px 0 0', boxShadow: '0 -20px 50px rgba(0,0,0,0.15)' }} />
+      <p style={{ position: 'absolute', left: 40, right: 40, bottom: 90, transform: 'translateY(50%)', fontSize: 16, color: '#333', lineHeight: 1.7, zIndex: 1 }}>
+        請將 M-Key 放置於螢幕旁的感應圖示上進行讀取，並等待逼聲。
+      </p>
+      <div style={{ position: 'absolute', left: 40, top: 443, width: 231, height: 6, borderRadius: 3, background: '#d9d9d9', zIndex: 1 }}>
+        <div style={{ width: `${progress}%`, height: '100%', borderRadius: 3, background: '#2880c2', transition: 'width 0.1s linear' }} />
+      </div>
+    </div>
+  )
+}
+
+function MkeyScanPage({ setPage }) {
+  const [progress, setProgress] = useState(100)
+  const intervalRef = useRef(null)
+  function finish() { clearInterval(intervalRef.current); setPage('mkey_add_pin') }
+  useEffect(() => {
+    setProgress(100)
+    intervalRef.current = setInterval(() => {
+      setProgress(p => { if (p <= 1) { clearInterval(intervalRef.current); finish(); return 0 } return p - 1 })
+    }, 100)
+    return () => clearInterval(intervalRef.current)
+  }, [])
+  return (
+    <div className="pq-page" onClick={finish} style={{ cursor: 'pointer' }}>
+      <div className="ss-titlebar" style={{ position: 'absolute', top: 0, left: 0, right: 0 }}>
+        <div style={{ width: 40 }} />
+        <span className="ss-title">新增 M-Key</span>
+        <div style={{ width: 40 }} />
+      </div>
+      <img src={imgScanMkey} alt="" style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: 106, width: 200, height: 200, objectFit: 'contain' }} />
+      <div style={{ position: 'absolute', top: 325, left: 0, right: 0, bottom: 0, background: '#fff', borderRadius: '42px 42px 0 0', boxShadow: '0 -20px 50px rgba(0,0,0,0.15)' }} />
+      <p style={{ position: 'absolute', left: 40, right: 40, bottom: 90, transform: 'translateY(50%)', fontSize: 16, color: '#333', lineHeight: 1.7, zIndex: 1 }}>
+        將 M-Key 放置於螢幕旁邊的感應圖示上進行新增，並等待逼聲。下一步需要輸入 PIN 碼。
+      </p>
+      <div style={{ position: 'absolute', left: 40, top: 443, width: 231, height: 6, borderRadius: 3, background: '#d9d9d9', zIndex: 1 }}>
+        <div style={{ width: `${progress}%`, height: '100%', borderRadius: 3, background: '#2880c2', transition: 'width 0.1s linear' }} />
+      </div>
+    </div>
+  )
+}
+
+function MkeySearchScanPage({ setPage }) {
+  const [progress, setProgress] = useState(100)
+  const intervalRef = useRef(null)
+  function finish() { clearInterval(intervalRef.current); setPage('mkey_search_result') }
+  useEffect(() => {
+    setProgress(100)
+    intervalRef.current = setInterval(() => {
+      setProgress(p => { if (p <= 1) { clearInterval(intervalRef.current); finish(); return 0 } return p - 1 })
+    }, 100)
+    return () => clearInterval(intervalRef.current)
+  }, [])
+  return (
+    <div className="pq-page" onClick={finish} style={{ cursor: 'pointer' }}>
+      <div className="ss-titlebar" style={{ position: 'absolute', top: 0, left: 0, right: 0 }}>
+        <div style={{ width: 40 }} />
+        <span className="ss-title">讀取 M-key</span>
+        <div style={{ width: 40 }} />
+      </div>
+      <img src={imgScanMkey} alt="" style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: 106, width: 200, height: 200, objectFit: 'contain' }} />
+      <div style={{ position: 'absolute', top: 325, left: 0, right: 0, bottom: 0, background: '#fff', borderRadius: '42px 42px 0 0', boxShadow: '0 -20px 50px rgba(0,0,0,0.15)' }} />
+      <p style={{ position: 'absolute', left: 40, right: 40, bottom: 90, transform: 'translateY(50%)', fontSize: 16, color: '#333', lineHeight: 1.7, zIndex: 1 }}>
+        請將 M-Key 放置於螢幕旁的感應圖示上進行讀取，並等待逼聲。
+      </p>
+      <div style={{ position: 'absolute', left: 40, top: 443, width: 231, height: 6, borderRadius: 3, background: '#d9d9d9', zIndex: 1 }}>
+        <div style={{ width: `${progress}%`, height: '100%', borderRadius: 3, background: '#2880c2', transition: 'width 0.1s linear' }} />
+      </div>
+    </div>
+  )
+}
+
+function MkeySearchResultPage({ setPage }) {
+  const [toast, setToast] = useState(false)
+  const item = DEMO_MKEYS[0]
+
+  function handleRemove() {
+    setToast(true)
+    setTimeout(() => setPage('mkey_management'), 1500)
+  }
+
+  return (
+    <div style={{ width: 320, height: 480, background: '#e8f2f7', position: 'relative' }}>
+      <div className="ss-titlebar">
+        <div style={{ width: 40 }} />
+        <span className="ss-title">感應查詢</span>
+        <div style={{ width: 40 }} />
+      </div>
+      <div style={{ position: 'absolute', top: 117, left: 26, width: 268, display: 'flex', flexDirection: 'column', gap: 36 }}>
+        <div style={{ background: '#fff', borderRadius: 8, padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <span style={{ fontSize: 16, color: '#666' }}>名稱：{item.name}</span>
+          <span style={{ fontSize: 16, color: '#666' }}>ID：{item.id}</span>
+          <span style={{ fontSize: 16, color: '#666' }}>啟用時間：{item.time}</span>
+        </div>
+        <p style={{ fontSize: 16, color: '#333', lineHeight: 1.7 }}>
+          確定要刪除此解鎖工具嗎？<br />刪除後，將無法再用此工具開啟這台電子鎖。
+        </p>
+      </div>
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, display: 'flex', height: 60 }}>
+        <button onClick={() => setPage('mkey_management')} style={{ flex: 1, border: 'none', background: '#666', fontSize: 20, color: '#fff', cursor: 'pointer' }}>離開</button>
+        <button onClick={handleRemove} style={{ flex: 1, border: 'none', background: 'linear-gradient(90deg, #c92b08 0%, #e64523 100%)', fontSize: 20, color: '#fff', cursor: 'pointer' }}>移除</button>
+      </div>
+      {toast && <div className="toast" style={{ zIndex: 2 }}>M-key 刪除成功！</div>}
+    </div>
+  )
+}
+
+const DEMO_LOCKS = [
+  { label: '電子鎖：我的家・大門',   time: '2025/02/20 17:22:21' },
+  { label: '電子鎖：桃園老家・大門', time: '2025/02/20 17:22:21' },
+  { label: '電子鎖：永慶物業管理',   time: '2025/02/20 17:22:21' },
+]
+
+function MkeyLockScanPage({ setPage }) {
+  const [progress, setProgress] = useState(100)
+  const intervalRef = useRef(null)
+  function finish() { clearInterval(intervalRef.current); setPage('mkey_lock_pin') }
+  useEffect(() => {
+    setProgress(100)
+    intervalRef.current = setInterval(() => {
+      setProgress(p => { if (p <= 1) { clearInterval(intervalRef.current); finish(); return 0 } return p - 1 })
+    }, 100)
+    return () => clearInterval(intervalRef.current)
+  }, [])
+  return (
+    <div className="pq-page" onClick={finish} style={{ cursor: 'pointer' }}>
+      <div className="ss-titlebar" style={{ position: 'absolute', top: 0, left: 0, right: 0 }}>
+        <div style={{ width: 40 }} />
+        <span className="ss-title">讀取 M-key</span>
+        <div style={{ width: 40 }} />
+      </div>
+      <img src={imgScanMkey} alt="" style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: 106, width: 200, height: 200, objectFit: 'contain' }} />
+      <div style={{ position: 'absolute', top: 325, left: 0, right: 0, bottom: 0, background: '#fff', borderRadius: '42px 42px 0 0', boxShadow: '0 -20px 50px rgba(0,0,0,0.15)' }} />
+      <p style={{ position: 'absolute', left: 40, right: 40, bottom: 90, transform: 'translateY(50%)', fontSize: 16, color: '#333', lineHeight: 1.7, zIndex: 1 }}>
+        請將 M-Key 放置於螢幕旁的感應圖示上進行讀取，並等待逼聲。
+      </p>
+      <div style={{ position: 'absolute', left: 40, top: 443, width: 231, height: 6, borderRadius: 3, background: '#d9d9d9', zIndex: 1 }}>
+        <div style={{ width: `${progress}%`, height: '100%', borderRadius: 3, background: '#2880c2', transition: 'width 0.1s linear' }} />
+      </div>
+    </div>
+  )
+}
+
+function MkeyLockListPage({ onBack, setPage, setSelectedLock }) {
+  return (
+    <div className="ss-page">
+      <div className="ss-titlebar">
+        <button className="ss-back-btn" onClick={onBack}>
+          <img src={btnCircle} alt="" width="40" height="40" />
+        </button>
+        <span className="ss-title">已綁定電子鎖</span>
+        <div style={{ width: 40 }} />
+      </div>
+      <div style={{ flex: 1, overflowY: 'auto' }}>
+        <div className="cl-list">
+          <div className="cl-row" style={{ cursor: 'pointer' }} onClick={() => { setSelectedLock(null); setPage('mkey_lock_remove') }}>
+            <span className="cl-row-label">移除全部電子鎖</span>
+            <TrashIcon />
+          </div>
+          {DEMO_LOCKS.map((item, i) => (
+            <div key={i} className="cl-row" style={{ cursor: 'pointer' }} onClick={() => { setSelectedLock(item); setPage('mkey_lock_remove') }}>
+              <div className="cl-row-text">
+                <span className="cl-row-label">{item.label}</span>
+                <span className="cl-row-label" style={{ color: '#666' }}>啟用時間：{item.time}</span>
+              </div>
+              <TrashIcon />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function MkeyLockRemovePage({ onBack, item, setPage }) {
+  const [toast, setToast] = useState(false)
+
+  function handleRemove() {
+    setToast(true)
+    setTimeout(() => setPage('mkey_lock_list'), 1500)
+  }
+
+  return (
+    <div style={{ width: 320, height: 480, background: '#e8f2f7', position: 'relative' }}>
+      <div className="ss-titlebar">
+        <div style={{ width: 40 }} />
+        <span className="ss-title">移除電子鎖</span>
+        <div style={{ width: 40 }} />
+      </div>
+      <div style={{ position: 'absolute', top: 117, left: 26, width: 268, display: 'flex', flexDirection: 'column', gap: 36 }}>
+        <div style={{ background: '#fff', borderRadius: 8, padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {item ? (
+            <>
+              <span style={{ fontSize: 16, color: '#666' }}>{item.label}</span>
+              <span style={{ fontSize: 16, color: '#666' }}>配對時間：{item.time}</span>
+            </>
+          ) : (
+            <span style={{ fontSize: 16, color: '#666' }}>全部電子鎖</span>
+          )}
+        </div>
+        <p style={{ fontSize: 16, color: '#333', lineHeight: 1.7 }}>
+          確定要移除電子鎖嗎？<br />
+          移除後，將無法使用這個 M-key 開啟上述電子鎖。<br /><br />
+          請注意，移除過程中，請勿讓 M-key 遠離主機，以免資料處理失敗。
+        </p>
+      </div>
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, display: 'flex', height: 60 }}>
+        <button onClick={onBack} style={{ flex: 1, border: 'none', background: '#666', fontSize: 20, color: '#fff', cursor: 'pointer' }}>取消</button>
+        <button onClick={handleRemove} style={{ flex: 1, border: 'none', background: '#dd330d', fontSize: 20, color: '#fff', cursor: 'pointer' }}>移除</button>
+      </div>
+      {toast && <div className="toast" style={{ zIndex: 2 }}>已移除電子鎖！</div>}
+    </div>
+  )
+}
+
+function MkeyAddPage({ onBack, setPage }) {
+  return (
+    <div style={{ width: 320, height: 480, background: 'linear-gradient(180deg,#e5f0f6 0%,#c4d8ec 100%)', position: 'relative', overflow: 'hidden' }}>
+      <div className="ss-titlebar">
+        <button className="ss-back-btn" onClick={onBack}>
+          <img src={btnCircle} alt="" width="40" height="40" />
+        </button>
+        <span className="ss-title">新增 M-Key</span>
+        <div style={{ width: 40 }} />
+      </div>
+      <img src={imgAddMkey} alt="" style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: 81, width: 200, height: 200, objectFit: 'contain' }} />
+      <div style={{ position: 'absolute', top: 282, left: 0, right: 0, bottom: 0, background: '#fff', borderRadius: '42px 42px 0 0', boxShadow: '0 -20px 50px rgba(0,0,0,0.15)' }} />
+      <p style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: 306, width: 240, fontSize: 16, color: '#333', lineHeight: 1.7, zIndex: 1 }}>
+        請搖晃 M-key 3 秒，以進入綁定狀態 (雙色燈號閃爍且震動)。<br />M-key Pin 碼預設值為「0000」
+      </p>
+      <div style={{ position: 'absolute', bottom: 24, left: '50%', transform: 'translateX(-50%)', width: 165, height: 52, zIndex: 1 }}>
+        <button onClick={() => setPage('mkey_scan')} style={{ width: '100%', height: '100%', border: '1px solid #4980bb', borderRadius: 8, background: 'transparent', fontSize: 18, color: '#2e739e', cursor: 'pointer' }}>確認已閃燈</button>
+      </div>
+    </div>
+  )
+}
+
+function MkeyListPage({ onBack, setPage, setSelectedMkey }) {
+  return (
+    <div className="ss-page">
+      <div className="ss-titlebar">
+        <button className="ss-back-btn" onClick={onBack}>
+          <img src={btnCircle} alt="" width="40" height="40" />
+        </button>
+        <span className="ss-title">M-key 列表</span>
+        <div style={{ width: 40 }} />
+      </div>
+      <div style={{ flex: 1, overflowY: 'auto' }}>
+        <div className="cl-list">
+          {DEMO_MKEYS.map((item, i) => (
+            <div key={i} className="cl-row" style={{ cursor: 'pointer' }}
+              onClick={() => { setSelectedMkey(item); setPage('mkey_delete') }}>
+              <div className="cl-row-text">
+                <span className="cl-row-label" style={{ color: '#666' }}>名稱：{item.name}</span>
+                <span className="cl-row-label">ID：{item.id}</span>
+                <span className="cl-row-label" style={{ color: '#666' }}>啟用時間：{item.time}</span>
+              </div>
+              <TrashIcon />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function MkeyDeletePage({ onBack, item, setPage }) {
+  const [toast, setToast] = useState(false)
+
+  function handleDelete() {
+    setToast(true)
+    setTimeout(() => setPage('mkey_list'), 1500)
+  }
+
+  return (
+    <div style={{ width: 320, height: 480, background: '#e8f2f7', position: 'relative' }}>
+      <div className="ss-titlebar">
+        <div style={{ width: 40 }} />
+        <span className="ss-title">刪除開鎖方式</span>
+        <div style={{ width: 40 }} />
+      </div>
+      <div style={{ position: 'absolute', top: 117, left: 26, width: 268, display: 'flex', flexDirection: 'column', gap: 36 }}>
+        <div style={{ background: '#fff', borderRadius: 8, padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <span style={{ fontSize: 16, color: '#666' }}>名稱：{item?.name}</span>
+          <span style={{ fontSize: 16, color: '#666' }}>ID：{item?.id}</span>
+          <span style={{ fontSize: 16, color: '#666' }}>啟用時間：{item?.time}</span>
+        </div>
+        <p style={{ fontSize: 16, color: '#333', lineHeight: 1.7 }}>
+          確定要刪除此解鎖工具嗎？<br />刪除後，將無法再用此工具開啟這台電子鎖。
+        </p>
+      </div>
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, display: 'flex', height: 60 }}>
+        <button onClick={onBack} style={{ flex: 1, border: 'none', background: '#666', fontSize: 20, color: '#fff', cursor: 'pointer' }}>取消</button>
+        <button onClick={handleDelete} style={{ flex: 1, border: 'none', background: '#dd330d', fontSize: 20, color: '#fff', cursor: 'pointer' }}>刪除</button>
+      </div>
+      {toast && <div className="toast" style={{ zIndex: 2 }}>M-key 刪除成功！</div>}
     </div>
   )
 }
@@ -658,6 +1413,28 @@ function CardScanDeleteConfirmPage({ setPage, card = DEMO_CARDS[0] }) {
       </div>
       {showToast && <div className="toast">卡片刪除成功！</div>}
     </div>
+  )
+}
+
+function BatteryIcon({ level = 80 }) {
+  const color = level >= 50 ? '#27D66A' : level >= 20 ? '#F1C00F' : '#DD330D'
+  const maxFill = 21
+  const fillW = Math.max(0, Math.round(maxFill * level / 100))
+  return (
+    <svg width="28" height="12" viewBox="0 0 28 12" style={{ display: 'block' }}>
+      <rect x="0.75" y="0.75" width="23.5" height="10.5" rx="2" stroke="#757575" strokeWidth="1.5" fill="none" />
+      <rect x="25" y="3.5" width="2.5" height="5" rx="0.75" fill="#757575" />
+      {fillW > 0 && <rect x="2" y="2" width={fillW} height="8" rx="1" fill={color} />}
+    </svg>
+  )
+}
+
+function PlusIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
+      <line x1="12" y1="5" x2="12" y2="19" stroke="#333" strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="5" y1="12" x2="19" y2="12" stroke="#333" strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
   )
 }
 
@@ -2146,6 +2923,12 @@ export default function App() {
   const [page, setPage] = useState('home')
   const [pendingCode, setPendingCode] = useState('')
   const [selectedCard, setSelectedCard] = useState(null)
+  const [selectedMkey, setSelectedMkey] = useState(null)
+  const [selectedLock, setSelectedLock] = useState(null)
+  const [selectedFinger, setSelectedFinger] = useState(null)
+  const [selectedFace, setSelectedFace] = useState(null)
+  const [selectedHand, setSelectedHand] = useState(null)
+  const [pendingMkeyPin, setPendingMkeyPin] = useState('')
   const [sensingMode, setSensingMode] = useState('energy')
   const [unlockMode, setUnlockMode] = useState(false)
   const [wifiNetwork, setWifiNetwork] = useState('')
@@ -2202,7 +2985,16 @@ export default function App() {
             {page === 'lock_info'        && <LockInfoPage onBack={() => setPage('system_setting2')} setPage={setPage} setDeviceInfo={setDeviceInfo} />}
             {page === 'device_info'      && <DeviceInfoPage onBack={() => setPage('lock_info')} rows={DEVICE_DATA[deviceInfo] ?? []} />}
             {page === 'passcode_setting' && <PasscodeSettingPage onBack={() => setPage('system_setting')} setPage={setPage} />}
-            {page === 'key_management'   && <KeyManagementPage onBack={() => setPage('system_setting')} setPage={setPage} />}
+            {page === 'key_management'      && <KeyManagementPage onBack={() => setPage('system_setting')} setPage={setPage} />}
+            {page === 'finger_management'   && <FingerManagementPage onBack={() => setPage('key_management')} setPage={setPage} setSelectedFinger={setSelectedFinger} />}
+            {page === 'finger_add'          && <FingerAddPage setPage={setPage} />}
+            {page === 'finger_delete'       && <FingerDeletePage onBack={() => setPage('finger_management')} item={selectedFinger} setPage={setPage} />}
+            {page === 'face_management'     && <FaceManagementPage onBack={() => setPage('key_management')} setPage={setPage} setSelectedFace={setSelectedFace} />}
+            {page === 'face_add'            && <FaceAddPage setPage={setPage} />}
+            {page === 'face_delete'         && <FaceDeletePage onBack={() => setPage('face_management')} item={selectedFace} setPage={setPage} />}
+            {page === 'hand_management'     && <HandManagementPage onBack={() => setPage('key_management')} setPage={setPage} setSelectedHand={setSelectedHand} />}
+            {page === 'hand_add'            && <HandAddPage setPage={setPage} />}
+            {page === 'hand_delete'         && <HandDeletePage onBack={() => setPage('hand_management')} item={selectedHand} setPage={setPage} />}
             {page === 'card_management'  && <CardManagementPage onBack={() => setPage('key_management')} setPage={setPage} />}
             {page === 'card_remove'      && <CardRemovePage onBack={() => setPage('card_management')} setPage={setPage} setSelectedCard={setSelectedCard} />}
             {page === 'card_delete_all'       && <CardDeleteAllPage onBack={() => setPage('card_remove')} setPage={setPage} />}
@@ -2214,7 +3006,49 @@ export default function App() {
             {page === 'card_delete'      && <CardDeletePage onBack={() => setPage('card_list')} setPage={setPage} />}
             {page === 'card_add'         && <CardAddPage setPage={setPage} />}
             {page === 'card_add_result'  && <CardAddResultPage setPage={setPage} />}
-            {page === 'mkey_management'  && <MkeyManagementPage onBack={() => setPage('key_management')} />}
+            {page === 'mkey_management'  && <MkeyManagementPage onBack={() => setPage('key_management')} setPage={setPage} />}
+            {page === 'mkey_add'         && <MkeyAddPage onBack={() => setPage('mkey_management')} setPage={setPage} />}
+            {page === 'mkey_scan'        && <MkeyScanPage setPage={setPage} />}
+            {page === 'mkey_add_pin'     && <MkeyPinPage onBack={() => setPage('mkey_scan')} setPage={setPage} />}
+            {page === 'mkey_change_pin_scan' && <MkeyChangePinScanPage setPage={setPage} />}
+            {page === 'mkey_change_pin_current' && (
+              <MkeyPinPage
+                onBack={() => setPage('mkey_change_pin_scan')}
+                title="請輸入 M-key PIN 碼"
+                onConfirm={() => setPage('mkey_change_pin_new')}
+                setPage={setPage}
+              />
+            )}
+            {page === 'mkey_change_pin_new' && (
+              <MkeyPinPage
+                onBack={() => setPage('mkey_change_pin_current')}
+                title="請設定 4 位 M-key pin 碼"
+                onConfirm={code => { setPendingMkeyPin(code); setPage('mkey_change_pin_confirm') }}
+                setPage={setPage}
+              />
+            )}
+            {page === 'mkey_change_pin_confirm' && (
+              <MkeyChangePinConfirmPage
+                onBack={() => setPage('mkey_change_pin_new')}
+                expected={pendingMkeyPin}
+                setPage={setPage}
+              />
+            )}
+            {page === 'mkey_list'          && <MkeyListPage onBack={() => setPage('mkey_management')} setPage={setPage} setSelectedMkey={setSelectedMkey} />}
+            {page === 'mkey_delete'        && <MkeyDeletePage onBack={() => setPage('mkey_list')} item={selectedMkey} setPage={setPage} />}
+            {page === 'mkey_search_scan'   && <MkeySearchScanPage setPage={setPage} />}
+            {page === 'mkey_search_result' && <MkeySearchResultPage setPage={setPage} />}
+            {page === 'mkey_lock_scan'     && <MkeyLockScanPage setPage={setPage} />}
+            {page === 'mkey_lock_pin'      && (
+              <MkeyPinPage
+                onBack={() => setPage('mkey_lock_scan')}
+                title="請輸入 M-key PIN 碼"
+                onConfirm={() => setPage('mkey_lock_list')}
+                setPage={setPage}
+              />
+            )}
+            {page === 'mkey_lock_list'   && <MkeyLockListPage onBack={() => setPage('mkey_management')} setPage={setPage} setSelectedLock={setSelectedLock} />}
+            {page === 'mkey_lock_remove' && <MkeyLockRemovePage onBack={() => setPage('mkey_lock_list')} item={selectedLock} setPage={setPage} />}
             {page === 'passcode_query'        && <PasscodeQueryPage onBack={() => setPage('passcode_setting')} />}
             {page === 'manage_passcode_query' && <ManagePasscodeQueryPage onBack={() => setPage('passcode_setting')} />}
             {page === 'sos_passcode_query'    && <SosPasscodeQueryPage onBack={() => setPage('passcode_setting')} />}
@@ -2226,8 +3060,10 @@ export default function App() {
             {page === 'confirm_sos'    && <ConfirmPasscodePage title="請確認求救密碼" toastText="求救密碼設定成功，請妥善保管" mismatchText="與求救密碼不相符" maxDigits={8} expected={pendingCode} onBack={() => setPage('set_sos')} onConfirmed={() => setPage('passcode_setting')} />}
           </div>
           {['home','home_unlock','home_open'].includes(page) && wifiOk && <>
-            <span className="canvas-label" style={{ left: 117, top: 18 }}>80%</span>
-            <span className="canvas-label" style={{ left: 241, top: 18 }}>75%</span>
+            <span className="canvas-label" style={{ left: 75, top: 16 }}>門外 80%</span>
+            <span className="canvas-label" style={{ left: 198, top: 16 }}>門內 75%</span>
+            <div style={{ position: 'absolute', left: 163, top: 23, pointerEvents: 'none' }}><BatteryIcon level={75} /></div>
+            <div style={{ position: 'absolute', left: 279, top: 23, pointerEvents: 'none' }}><BatteryIcon level={38} /></div>
           </>}
         </div>
         <div className="scenario-btns">
