@@ -31,6 +31,7 @@ import icAddonCateye  from './assets/ic_addon_cateye.png'
 import icAddonAdd     from './assets/ic_addon_add.png'
 import icAddonInfo    from './assets/ic_addon_info.png'
 import icAddonRemove  from './assets/ic_addon_remove.png'
+import icBpartDoorlock from './assets/ic_bpart_doorlock.png'
 import icBpartInfo    from './assets/ic_bpart_info.png'
 import icBpartReset   from './assets/ic_bpart_reset.png'
 import icKeyCard      from './assets/ic_key_card.png'
@@ -1741,16 +1742,16 @@ function SystemSetting2Page({ onBack, setPage }) {
 function ProbeAddonPage({ onBack, setPage }) {
   const cells = [
     {
+      title: '門外感應器設置',
+      sub: '重新綁定 / 解綁 / 配對裝置。',
+      icon: icBpartChangea,
+      onClick: () => setPage('probe_setting'),
+    },
+    {
       title: '解鎖卡榫 / 更換電池',
       sub: '門外感應器的卡榫會打開，可將\n門外感應器取下。或是使用已\n綁定的卡片 / M-key，連續感應\n10 秒，也可將裝置取下。',
       icon: icDeviceATook,
       onClick: () => setPage('change_battery'),
-    },
-    {
-      title: '更換門外感應器',
-      sub: '重新綁定 / 配對裝置。',
-      icon: icBpartChangea,
-      onClick: () => setPage('replace_probe_confirm'),
     },
   ]
   return (
@@ -2015,15 +2016,15 @@ function AddonInfoPage({ onBack }) {
 function ControllerAddonPage({ onBack, setPage }) {
   const cells = [
     {
-      title: '更換門鎖控制器',
-      sub: '重新綁定 / 配對裝置。',
+      title: '門鎖控制器設置',
+      sub: '重新綁定 / 解綁 / 配對裝置。',
       icon: icBpartChangea,
-      onClick: () => setPage('replace_controller_confirm'),
+      onClick: () => setPage('controller_setting'),
     },
     {
       title: '門鎖狀態偵測',
       sub: '點擊後，門鎖馬達會自動轉動至定位並停止。\n請在停止後確認鎖舌狀態',
-      icon: icBpartChangea,
+      icon: icBpartDoorlock,
       onClick: () => setPage('lock_detect'),
     },
   ]
@@ -2131,7 +2132,69 @@ function LockPositionPage({ onBack, setPage }) {
   )
 }
 
-function ReplaceProbeConfirmPage({ onBack, nextPage, setPage }) {
+function ProbeSettingPage({
+  onBack,
+  setPage,
+  deviceName = '門外感應器',
+  bindPage = 'bind_probe_scan',
+  unbindPage = 'probe_unbind_confirm',
+  replacePage = 'replace_probe_confirm',
+  unbindSub,
+}) {
+  const cells = [
+    {
+      title: '綁定新裝置',
+      sub: `綁定新的${deviceName}。若舊裝置尚未解綁，\n請使用「更換裝置」來進行新舊交換。`,
+      icon: icAddonAdd,
+      onClick: () => setPage(bindPage),
+    },
+    {
+      title: '解綁舊裝置',
+      sub: unbindSub ?? `將舊的${deviceName}解綁。\n請注意，解綁後將無法使用感應開鎖，\n僅能使用 App 連線開鎖。`,
+      icon: icAddonRemove,
+      onClick: () => setPage(unbindPage),
+    },
+    {
+      title: '更換裝置',
+      sub: `將舊的裝置解綁，並綁定新的${deviceName}。`,
+      icon: icBpartChangea,
+      onClick: () => setPage(replacePage),
+    },
+  ]
+
+  return (
+    <div style={{ width: 320, height: 480, background: '#e8f2f7', position: 'relative' }}>
+      <div className="ss-titlebar">
+        <button className="ss-back-btn" onClick={onBack}>
+          <img src={btnCircle} alt="" width="40" height="40" />
+        </button>
+        <span className="ss-title">{deviceName}設置</span>
+        <div style={{ width: 40 }} />
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+        {cells.map((cell, index) => (
+          <div key={cell.title} onClick={cell.onClick} style={{ background: '#f7f7f7', border: '1px solid #fff', borderRadius: 2, height: index === 2 ? 131 : 130, position: 'relative', overflow: 'hidden', cursor: 'pointer' }}>
+            <div style={{ position: 'absolute', left: 13, top: 13, right: 13 }}>
+              <div style={{ fontSize: 18, fontWeight: 510, color: '#333', marginBottom: 6, lineHeight: 1 }}>{cell.title}</div>
+              <div style={{ fontSize: 15, color: '#666', lineHeight: 1.4, whiteSpace: 'pre-line' }}>{cell.sub}</div>
+            </div>
+            <img src={cell.icon} alt="" style={{ position: 'absolute', bottom: 7, right: 7, width: 48, height: 48, opacity: 0.3 }} />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function ProbeUnbindConfirmPage({
+  onBack,
+  setPage,
+  danger = false,
+  deviceName = '門外感應器',
+  dangerPage = 'probe_unbind_danger_confirm',
+  successPage = 'change_probe_success',
+  description = '解綁後，將無法使用感應開鎖，僅能使用 App 連線開鎖。',
+}) {
   return (
     <div style={{ width: 320, height: 480, background: '#e8f2f7', position: 'relative' }}>
       <div className="ss-titlebar">
@@ -2140,9 +2203,35 @@ function ReplaceProbeConfirmPage({ onBack, nextPage, setPage }) {
         <div style={{ width: 40 }} />
       </div>
       <div style={{ position: 'absolute', top: 117, left: 26, width: 268 }}>
-        <p style={{ fontSize: 16, color: '#333', lineHeight: 1.7 }}>確定要更換 裝置 嗎？</p>
+        <p style={{ fontSize: 16, color: danger ? '#dd330d' : '#333', lineHeight: 1.7, margin: 0 }}>確定要解綁 {deviceName} 嗎？</p>
+        <p style={{ fontSize: 16, color: danger ? '#dd330d' : '#333', lineHeight: 1.7, margin: '36px 0 0' }}>
+          {description}
+        </p>
+      </div>
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, display: 'flex', height: 60 }}>
+        <button onClick={onBack} style={{ flex: 1, border: 'none', background: '#666', fontSize: 20, color: '#fff', cursor: 'pointer' }}>
+          取消
+        </button>
+        <button onClick={() => setPage(danger ? successPage : dangerPage)} style={{ flex: 1, border: 'none', background: danger ? '#dd330d' : 'linear-gradient(90deg, #0081e3 0%, #1065a6 100%)', fontSize: 20, color: '#fff', cursor: 'pointer' }}>
+          {danger ? '解綁' : '確定'}
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function ReplaceProbeConfirmPage({ onBack, nextPage, setPage, deviceName = '裝置' }) {
+  return (
+    <div style={{ width: 320, height: 480, background: '#e8f2f7', position: 'relative' }}>
+      <div className="ss-titlebar">
+        <div style={{ width: 40 }} />
+        <span className="ss-title">更換裝置</span>
+        <div style={{ width: 40 }} />
+      </div>
+      <div style={{ position: 'absolute', top: 117, left: 26, width: 268 }}>
+        <p style={{ fontSize: 16, color: '#333', lineHeight: 1.7 }}>確定要更換 {deviceName} 嗎？</p>
         <p style={{ fontSize: 16, color: '#333', lineHeight: 1.7, marginTop: 16 }}>
-          更換時，請將 <strong>新的裝置</strong> 開機，並靠近 <strong>主機</strong> 感應區，當聽到提示音、裝置亮起綠燈時，代表綁定完成。
+          更換時，請將 <strong>新的{deviceName}</strong> 開機，並靠近 <strong>主機</strong> 感應區，當聽到提示音、裝置亮起綠燈時，代表綁定完成。
         </p>
       </div>
       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, display: 'flex', height: 60 }}>
@@ -2958,6 +3047,9 @@ export default function App() {
             {page === 'sensing_mode'      && <SensingModePage onBack={() => setPage('function_setting')} sensingMode={sensingMode} setSensingMode={setSensingMode} />}
             {page === 'system_setting2'  && <SystemSetting2Page onBack={() => setPage('home')} setPage={setPage} />}
             {page === 'probe_addon'      && <ProbeAddonPage onBack={() => setPage('system_setting2')} setPage={setPage} />}
+            {page === 'probe_setting'    && <ProbeSettingPage onBack={() => setPage('probe_addon')} setPage={setPage} />}
+            {page === 'probe_unbind_confirm' && <ProbeUnbindConfirmPage onBack={() => setPage('probe_setting')} setPage={setPage} />}
+            {page === 'probe_unbind_danger_confirm' && <ProbeUnbindConfirmPage onBack={() => setPage('probe_setting')} setPage={setPage} danger />}
             {page === 'change_battery'        && <ChangeBatteryPage onBack={() => setPage('probe_addon')} setPage={setPage} />}
             {page === 'remove_device'         && <RemoveDevicePage onBack={() => setPage('probe_addon')} />}
             {page === 'addon_manage'              && <AddonManagePage onBack={() => setPage('system_setting2')} setPage={setPage} />}
@@ -2968,13 +3060,16 @@ export default function App() {
             {page === 'addon_confirm'             && <AddonConfirmPage onBack={() => setPage('addon_manage')} setPage={setPage} />}
             {page === 'addon_success'             && <ChangeProbeSuccessPage onBack={() => setPage('addon_manage')} />}
             {page === 'controller_addon'          && <ControllerAddonPage onBack={() => setPage('system_setting2')} setPage={setPage} />}
+            {page === 'controller_setting'        && <ProbeSettingPage onBack={() => setPage('controller_addon')} setPage={setPage} deviceName="門鎖控制器" bindPage="bind_controller_scan" unbindPage="controller_unbind_confirm" replacePage="replace_controller_confirm" unbindSub={'將舊的門鎖控制器解綁。\n請注意，解綁後將無法使用電子鎖開鎖。'} />}
+            {page === 'controller_unbind_confirm' && <ProbeUnbindConfirmPage onBack={() => setPage('controller_setting')} setPage={setPage} deviceName="門鎖控制器" dangerPage="controller_unbind_danger_confirm" successPage="change_controller_success" description="請注意，解綁後，將無法使用電子鎖開鎖！" />}
+            {page === 'controller_unbind_danger_confirm' && <ProbeUnbindConfirmPage onBack={() => setPage('controller_setting')} setPage={setPage} deviceName="門鎖控制器" dangerPage="controller_unbind_danger_confirm" successPage="change_controller_success" description="請注意，解綁後，將無法使用電子鎖開鎖！" danger />}
             {page === 'lock_detect'               && <LockDetectPage onBack={() => setPage('controller_addon')} setPage={setPage} />}
             {page === 'lock_position'             && <LockPositionPage onBack={() => setPage('controller_addon')} setPage={setPage} />}
             {page === 'lock_detect_success'       && <ChangeProbeSuccessPage onBack={() => setPage('controller_addon')} />}
-            {page === 'replace_probe_confirm'     && <ReplaceProbeConfirmPage onBack={() => setPage('probe_addon')} nextPage="bind_probe_scan" setPage={setPage} />}
+            {page === 'replace_probe_confirm'     && <ReplaceProbeConfirmPage onBack={() => setPage('probe_setting')} nextPage="bind_probe_scan" setPage={setPage} deviceName="門外感應器" />}
             {page === 'bind_probe_scan'           && <BindProbeScanPage heroImg={imgAChange} nextPage="change_probe_success" title="綁定門外感應器" setPage={setPage} />}
             {page === 'change_probe_success'      && <ChangeProbeSuccessPage onBack={() => setPage('system_setting2')} />}
-            {page === 'replace_controller_confirm'&& <ReplaceProbeConfirmPage onBack={() => setPage('controller_addon')} nextPage="bind_controller_scan" setPage={setPage} />}
+            {page === 'replace_controller_confirm'&& <ReplaceProbeConfirmPage onBack={() => setPage('controller_setting')} nextPage="bind_controller_scan" setPage={setPage} deviceName="門鎖控制器" />}
             {page === 'bind_controller_scan'      && <BindProbeScanPage heroImg={imgCChange} nextPage="change_controller_success" title="綁定門鎖控制器" setPage={setPage} />}
             {page === 'change_controller_success' && <ChangeProbeSuccessPage onBack={() => setPage('system_setting2')} />}
             {page === 'cateye'           && <CateyePage onBack={() => setPage('system_setting2')} />}
