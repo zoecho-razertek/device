@@ -1,0 +1,503 @@
+.app-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  padding: 40px 0;
+}
+
+.scenario-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.scenario-btn {
+  min-width: 88px;
+  height: 36px;
+  padding: 0 16px;
+  border: 1px solid #d5dae2;
+  border-radius: 8px;
+  background: #fff;
+  color: #5a6284;
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.scenario-btn--active {
+  border-color: #3a6ea5;
+  background: #3a6ea5;
+  color: #fff;
+}
+
+.frame-boundary {
+  position: relative;
+  width: 240px;
+  height: 240px;
+  outline: 1px dashed #999;
+  outline-offset: 0;
+}
+
+.frame-boundary::before {
+  content: '240 x 240px';
+  position: absolute;
+  left: 0;
+  bottom: 100%;
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: #999;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  white-space: nowrap;
+}
+
+.device-frame {
+  position: relative;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #fff;
+}
+
+/* ── 首頁 ─────────────────────────────────────────────────────────── */
+.home-page {
+  position: absolute;
+  inset: 0;
+}
+
+.home-bg {
+  position: absolute;
+  inset: 0;
+  width: 240px;
+  height: 240px;
+}
+
+.home-bluetooth {
+  position: absolute;
+  left: 107px;
+  top: 17px;
+  width: 27px;
+  height: 27px;
+}
+
+.home-shield {
+  position: absolute;
+  left: 75px;
+  top: 50px;
+  width: 90px;
+  height: 95px;
+  z-index: 1;
+}
+
+.home-shield-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.home-shield-lock {
+  position: absolute;
+  left: 50%;
+  top: calc(50% - 3px);
+  width: 28px;
+  height: 28px;
+  transform: translate(-50%, -50%);
+}
+
+.home-btn {
+  position: absolute;
+  left: 52px;
+  width: 136px;
+  height: 40px;
+  border: 0;
+  border-radius: 20.5px;
+  background: #fff;
+  color: #5a6284;
+  font-size: 16px;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(20, 30, 50, 0.1);
+  z-index: 2;
+}
+
+.home-btn:active {
+  background: #f1f3f6;
+}
+
+.home-btn:disabled {
+  color: #b7bccb;
+  cursor: default;
+  box-shadow: none;
+}
+
+.home-btn:disabled:active {
+  background: #fff;
+}
+
+.home-btn--unlock {
+  top: 132px;
+}
+
+.home-btn--settings {
+  top: 183px;
+}
+
+/* ── 密碼輸入頁 ───────────────────────────────────────────────────── */
+.input-page {
+  position: absolute;
+  inset: 0;
+}
+
+.input-title {
+  position: absolute;
+  left: 50%;
+  top: 45px;
+  transform: translateX(-50%);
+  margin: 0;
+  max-width: 190px;
+  color: #5a6284;
+  opacity: 0.4;
+  font-size: 24px;
+  font-family: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.input-title--value {
+  opacity: 1;
+  letter-spacing: 4px;
+}
+
+.input-wave {
+  position: absolute;
+  top: 106px;
+  width: 11.4px;
+  height: 28px;
+}
+
+.input-wave--left {
+  left: 45px;
+}
+
+.input-wave--right {
+  left: 184px;
+  transform: scaleX(-1);
+}
+
+.input-digit {
+  position: absolute;
+  left: 50%;
+  top: 83px;
+  width: 84px;
+  height: 84px;
+  transform: translateX(-50%);
+  border: 0;
+  border-radius: 20.5px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(20, 30, 50, 0.1);
+}
+
+.input-digit-value {
+  color: #5a6284;
+  font-size: 24px;
+}
+
+.input-digit-hint {
+  color: #5a6284;
+  opacity: 0.5;
+  font-size: 12px;
+}
+
+.input-side-btn {
+  position: absolute;
+  top: 152px;
+  width: 52px;
+  height: 40px;
+  border: 0;
+  border-radius: 20.5px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(20, 30, 50, 0.1);
+}
+
+.input-side-btn--back {
+  left: 26px;
+}
+
+.input-side-btn--delete {
+  left: 162px;
+}
+
+.input-submit {
+  position: absolute;
+  left: 50%;
+  top: 183px;
+  width: 81px;
+  height: 40px;
+  transform: translateX(-50%);
+  border: 0;
+  border-radius: 20.5px;
+  background: #fff;
+  color: #5a6284;
+  font-size: 16px;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(20, 30, 50, 0.1);
+}
+
+.input-submit--danger {
+  color: #dd330d;
+}
+
+.input-submit:active,
+.input-side-btn:active,
+.input-digit:active {
+  background: #f1f3f6;
+}
+
+/* ── 開鎖成功頁 ───────────────────────────────────────────────────── */
+.unlock-page {
+  position: absolute;
+  inset: 0;
+}
+
+.unlock-shield {
+  animation: unlock-shield-pulse 0.6s ease-out 0.15s both;
+}
+
+.unlock-icon-closed {
+  animation: unlock-icon-out 0.3s ease-in forwards;
+}
+
+.unlock-icon-open {
+  width: 36px;
+  height: 36px;
+  opacity: 0;
+  animation: unlock-icon-in 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 0.25s both;
+}
+
+.unlock-status {
+  position: absolute;
+  left: 50%;
+  top: 171px;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  color: #5a6284;
+  font-size: 16px;
+  font-family: inherit;
+  white-space: nowrap;
+  opacity: 0;
+  animation: unlock-text-in 0.4s ease-out 0.65s forwards;
+}
+
+@keyframes unlock-shield-pulse {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+@keyframes unlock-shield-pulse-centered {
+  0% { transform: translate(-50%, -50%) scale(1); }
+  35% { transform: translate(-50%, -50%) scale(1.1); }
+  100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes unlock-icon-out {
+  0% { opacity: 1; transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) rotate(-20deg) scale(0.5); }
+}
+
+@keyframes unlock-icon-in {
+  0% { opacity: 0; transform: translate(-50%, -50%) rotate(12deg) scale(0.4); }
+  60% { opacity: 1; transform: translate(-50%, -50%) rotate(-6deg) scale(1.18); }
+  100% { opacity: 1; transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+}
+
+@keyframes unlock-text-in {
+  0% { opacity: 0; transform: translate(-50%, -40%); }
+  100% { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+/* ── 設定頁 ───────────────────────────────────────────────────────── */
+.settings-page {
+  position: absolute;
+  inset: 0;
+}
+
+.settings-device-name {
+  position: absolute;
+  left: 50%;
+  top: 51px;
+  transform: translateX(-50%);
+  margin: 0;
+  color: #2e739e;
+  font-size: 16px;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.settings-unbind {
+  position: absolute;
+  left: 45px;
+  top: 100px;
+  width: 149px;
+  height: 40px;
+  border: 0;
+  border-radius: 20.5px;
+  background: #fff;
+  color: #5a6284;
+  font-size: 16px;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(20, 30, 50, 0.1);
+}
+
+.settings-unbind:active {
+  background: #f1f3f6;
+}
+
+/* ── 解綁確認頁 ───────────────────────────────────────────────────── */
+.confirm-page {
+  position: absolute;
+  inset: 0;
+}
+
+.confirm-message {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  color: #dd330d;
+  font-size: 16px;
+  font-family: inherit;
+  text-align: center;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.unbind-done-message {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  color: #2e739e;
+  font-size: 16px;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+/* ── Mkey 靠近感應頁 ──────────────────────────────────────────────── */
+.mkey-page {
+  position: absolute;
+  inset: 0;
+  background: #31323e;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.mkey-bg {
+  position: absolute;
+  inset: 0;
+  width: 240px;
+  height: 240px;
+}
+
+.mkey-ripple {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 90px;
+  height: 90px;
+  margin: -45px 0 0 -45px;
+  border: 1px solid #fedf50;
+  border-radius: 50%;
+  opacity: 0;
+  animation: mkey-ripple 3s ease-out infinite;
+}
+
+.mkey-ripple:nth-of-type(2) {
+  animation-delay: 0.75s;
+}
+
+.mkey-ripple:nth-of-type(3) {
+  animation-delay: 1.5s;
+}
+
+.mkey-ripple:nth-of-type(4) {
+  animation-delay: 2.25s;
+}
+
+@keyframes mkey-ripple {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(2.35); opacity: 0; }
+}
+
+.mkey-icon-wrap {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 91px;
+  height: 91px;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+.mkey-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform-origin: center;
+  animation: mkey-heartbeat 1.4s ease-in-out infinite;
+}
+
+@keyframes mkey-heartbeat {
+  0% { transform: scale(1); }
+  14% { transform: scale(1.13); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.13); }
+  70% { transform: scale(1); }
+  100% { transform: scale(1); }
+}
+
+/* ── Mkey 開鎖頁 ─────────────────────────────────────────────────── */
+.mkey-unlock-page {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+}
+
+.mkey-unlock-badge {
+  position: absolute;
+  left: 50%;
+  top: calc(50% - 19.5px);
+  width: 110px;
+  height: 110px;
+  transform: translate(-50%, -50%);
+}
+
+.mkey-unlock-badge--pulse {
+  animation: unlock-shield-pulse-centered 0.6s ease-out 0.15s both;
+}
+
+.mkey-unlock-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
