@@ -58,17 +58,32 @@
   height: 240px;
   border-radius: 50%;
   overflow: hidden;
-  background: #fff;
+  background: #0f2c36;
 }
 
 /* ── 首頁 ─────────────────────────────────────────────────────────── */
 .home-page {
   position: absolute;
   inset: 0;
+  border-radius: 50%;
+  background: #0f2c36;
+  overflow: hidden;
 }
 
 .home-page--offline-sense {
   cursor: pointer;
+}
+
+.home-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 8px solid #343944;
+  box-shadow:
+    inset 0 0 0 3px rgba(68, 112, 122, 0.55),
+    inset 0 0 0 8px rgba(10, 22, 28, 0.62);
+  pointer-events: none;
 }
 
 .home-bg {
@@ -78,12 +93,23 @@
   height: 240px;
 }
 
+.home-page .home-bg {
+  display: none;
+}
+
 .home-bluetooth {
   position: absolute;
   left: 107px;
   top: 17px;
   width: 27px;
   height: 27px;
+}
+
+.home-page .home-bluetooth {
+  left: 106px;
+  top: 16px;
+  width: 28px;
+  height: 28px;
 }
 
 .home-shield {
@@ -95,12 +121,23 @@
   z-index: 1;
 }
 
+.home-page .home-shield {
+  left: 95px;
+  top: 60px;
+  width: 50px;
+  height: 50px;
+}
+
 .home-shield-layer {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+
+.home-page .home-shield-layer {
+  display: none;
 }
 
 .home-shield-lock {
@@ -112,6 +149,16 @@
   transform: translate(-50%, -50%);
 }
 
+.home-page .home-shield-lock {
+  top: 50%;
+  width: 50px;
+  height: 50px;
+}
+
+.home-page--offline .home-shield-lock {
+  opacity: 0.5;
+}
+
 .home-btn {
   position: absolute;
   left: 50%;
@@ -120,36 +167,37 @@
   transform: translateX(-50%);
   border: 0;
   border-radius: 20.5px;
-  background: #fff;
-  color: #5a6284;
+  background: #606579;
+  color: #fff;
   font-size: 16px;
   font-family: inherit;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(20, 30, 50, 0.1);
+  box-shadow: none;
   z-index: 2;
 }
 
 .home-btn:active {
-  background: #f1f3f6;
+  background: #555a6d;
 }
 
 .home-btn:disabled {
-  color: #b7bccb;
+  background: rgba(96, 101, 121, 0.5);
+  color: rgba(255, 255, 255, 0.45);
   cursor: default;
   box-shadow: none;
   pointer-events: none;
 }
 
 .home-btn:disabled:active {
-  background: #fff;
+  background: rgba(96, 101, 121, 0.5);
 }
 
 .home-btn--unlock {
-  top: 132px;
+  top: 123px;
 }
 
 .home-btn--settings {
-  top: 183px;
+  top: 174px;
 }
 
 .offline-popup {
@@ -159,7 +207,7 @@
   width: 158px;
   height: 108px;
   border-radius: 8px;
-  background: #fff;
+  background: #4F5261;
   box-shadow: 0 4px 14px rgba(20, 30, 50, 0.16);
   display: flex;
   align-items: center;
@@ -169,7 +217,7 @@
 
 .offline-popup p {
   margin: 0;
-  color: #2c7499;
+  color: #fff;
   font-size: 16px;
   font-family: inherit;
   line-height: 1.45;
@@ -190,7 +238,7 @@
   transform: translateX(-50%);
   margin: 0;
   max-width: 190px;
-  color: #5a6284;
+  color: #fff;
   opacity: 0.4;
   font-size: 24px;
   font-family: inherit;
@@ -205,7 +253,7 @@
 }
 
 .input-title--error {
-  color: #dd330d;
+  color: #FFB7A6;
   opacity: 1;
 }
 
@@ -233,7 +281,7 @@
   transform: translateX(-50%);
   border: 0;
   border-radius: 20.5px;
-  background: #fff;
+  background: #4F5261;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -244,12 +292,12 @@
 }
 
 .input-digit-value {
-  color: #5a6284;
+  color: #fff;
   font-size: 24px;
 }
 
 .input-digit-hint {
-  color: #5a6284;
+  color: #fff;
   opacity: 0.5;
   font-size: 12px;
 }
@@ -261,7 +309,7 @@
   height: 40px;
   border: 0;
   border-radius: 20.5px;
-  background: #fff;
+  background: #4F5261;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -286,8 +334,8 @@
   transform: translateX(-50%);
   border: 0;
   border-radius: 20.5px;
-  background: #fff;
-  color: #5a6284;
+  background: #4F5261;
+  color: #fff;
   font-size: 16px;
   font-family: inherit;
   cursor: pointer;
@@ -295,19 +343,41 @@
 }
 
 .input-submit--danger {
-  color: #dd330d;
+  color: #FFB7A6;
 }
 
 .input-submit:active,
 .input-side-btn:active,
 .input-digit:active {
-  background: #f1f3f6;
+  background: #454857;
 }
 
 /* ── 開鎖成功頁 ───────────────────────────────────────────────────── */
 .unlock-page {
   position: absolute;
   inset: 0;
+}
+
+.unlock-page .home-shield {
+  left: 95px;
+  top: 60px;
+  width: 50px;
+  height: 50px;
+}
+
+.unlock-page .home-shield-layer {
+  display: none;
+}
+
+.unlock-page .home-shield-lock {
+  top: 50%;
+  width: 50px;
+  height: 50px;
+}
+
+.unlock-page .unlock-icon-open {
+  width: 64px;
+  height: 64px;
 }
 
 .unlock-shield {
@@ -319,8 +389,8 @@
 }
 
 .unlock-icon-open {
-  width: 36px;
-  height: 36px;
+  width: 50px;
+  height: 50px;
   opacity: 0;
   animation: unlock-icon-in 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 0.25s both;
 }
@@ -331,7 +401,7 @@
   top: 171px;
   transform: translate(-50%, -50%);
   margin: 0;
-  color: #5a6284;
+  color: #fff;
   font-size: 16px;
   font-family: inherit;
   white-space: nowrap;
@@ -379,7 +449,7 @@
   top: 51px;
   transform: translateX(-50%);
   margin: 0;
-  color: #2e739e;
+  color: #fff;
   font-size: 16px;
   font-family: inherit;
   white-space: nowrap;
@@ -393,8 +463,8 @@
   height: 40px;
   border: 0;
   border-radius: 20.5px;
-  background: #fff;
-  color: #5a6284;
+  background: #4F5261;
+  color: #fff;
   font-size: 16px;
   font-family: inherit;
   cursor: pointer;
@@ -402,7 +472,7 @@
 }
 
 .settings-unbind:active {
-  background: #f1f3f6;
+  background: #454857;
 }
 
 /* ── 解綁確認頁 ───────────────────────────────────────────────────── */
@@ -417,7 +487,7 @@
   top: 50%;
   transform: translate(-50%, -50%);
   margin: 0;
-  color: #dd330d;
+  color: #FFB7A6;
   font-size: 16px;
   font-family: inherit;
   text-align: center;
@@ -431,7 +501,7 @@
   top: 50%;
   transform: translate(-50%, -50%);
   margin: 0;
-  color: #2e739e;
+  color: #fff;
   font-size: 16px;
   font-family: inherit;
   white-space: nowrap;
@@ -441,7 +511,6 @@
 .mkey-page {
   position: absolute;
   inset: 0;
-  background: #31323e;
   overflow: hidden;
   cursor: pointer;
 }
@@ -542,7 +611,7 @@
   top: 181px;
   transform: translate(-50%, -50%);
   margin: 0;
-  color: #5a6284;
+  color: #fff;
   font-size: 16px;
   font-family: inherit;
   white-space: nowrap;

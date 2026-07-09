@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import imgBg from './assets/bg.svg'
 import icBluetooth from './assets/ic_bluetooth.svg'
+import icBluetoothDark from './assets/ic_bluetooth_dark.svg'
 import icBluetoothOff from './assets/ic_bluetooth_off.svg'
 import imgLock from './assets/img_lock.png'
 import imgLockG from './assets/img_lock_g.png'
@@ -11,7 +12,6 @@ import icDelete from './assets/ic_delete.svg'
 import icBack from './assets/ic_back.svg'
 import waveLeft from './assets/img_left.svg'
 import waveRight from './assets/img_right.svg'
-import bgMkey from './assets/bg_mkey.svg'
 import imgMkey from './assets/img_mkey.png'
 import imgMkeyE from './assets/img_mkey_e.png'
 
@@ -43,13 +43,13 @@ function HomePage({
 }) {
   return (
     <div
-      className={`home-page${offline && onOfflineSense ? ' home-page--offline-sense' : ''}`}
+      className={`home-page${offline ? ' home-page--offline' : ''}${offline && onOfflineSense ? ' home-page--offline-sense' : ''}`}
       onClick={offline ? onOfflineSense : undefined}
     >
       <img className="home-bg" src={imgBg} alt="" />
       <img
         className="home-bluetooth"
-        src={offline ? icBluetoothOff : icBluetooth}
+        src={offline ? icBluetoothOff : icBluetoothDark}
         alt={offline ? '藍牙已中斷' : '藍牙已連線'}
       />
 
@@ -202,7 +202,7 @@ function UnbindDonePage({ onConfirm }) {
 function MkeyPage({ onSense }) {
   return (
     <div className="mkey-page" onClick={onSense}>
-      <img className="mkey-bg" src={bgMkey} alt="" />
+      <img className="mkey-bg" src={imgBg} alt="" />
 
       <span className="mkey-ripple" />
       <span className="mkey-ripple" />
@@ -227,7 +227,7 @@ function MkeyUnlockPage({ onDone, autoOpen = false }) {
 
   return (
     <div className="mkey-unlock-page" onClick={() => setOpened(true)}>
-      <img className="mkey-bg" src={bgMkey} alt="" />
+      <img className="mkey-bg" src={imgBg} alt="" />
       <img className="home-bluetooth" src={icBluetooth} alt="藍牙已連線" />
 
       <div className={`mkey-unlock-badge${opened ? ' mkey-unlock-badge--pulse' : ''}`}>
