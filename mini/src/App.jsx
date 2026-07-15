@@ -2892,60 +2892,13 @@ function RowToggle({ on, setOn }) {
   )
 }
 
-function CheckIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
-      <path d="M5 12.5l4.5 4.5 9.5-10" stroke="#0081e3" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  )
-}
-
-function SensingModePage({ onBack, sensingMode, setSensingMode }) {
-  const selected = sensingMode
-  const setSelected = setSensingMode
-
-  const options = [
-    { id: 'energy',  title: '節能待機', sub: '需先觸摸螢幕，再進行感應開鎖' },
-    { id: 'instant', title: '即時感應', sub: '可隨時感應開鎖' },
-  ]
-
-  return (
-    <div style={{ width: 320, height: 480, background: '#e8f2f7', position: 'relative', display: 'flex', flexDirection: 'column' }}>
-      <div className="ss-titlebar">
-        <button className="ss-back-btn" onClick={onBack}>
-          <img src={btnCircle} alt="" width="40" height="40" />
-        </button>
-        <span className="ss-title">感應模式</span>
-        <div style={{ width: 40 }} />
-      </div>
-      <div className="cl-list">
-        {options.map(opt => (
-          <div key={opt.id} className="cl-row" style={{ cursor: 'pointer' }} onClick={() => setSelected(opt.id)}>
-            <div className="cl-row-text">
-              <span style={{ fontSize: 18, fontWeight: 500, color: '#333', lineHeight: 1 }}>{opt.title}</span>
-              <span className="cl-row-label">{opt.sub}</span>
-            </div>
-            {selected === opt.id && <CheckIcon />}
-          </div>
-        ))}
-      </div>
-      <p style={{ fontSize: 16, color: '#333', lineHeight: 1.6, padding: '20px 24px 0' }}>
-        使用節能待機模式，需先觸摸螢幕，喚醒電子所，再進行卡片 / 生物辨識感應。使用此模式，可大幅延長電子鎖的續航時間。
-      </p>
-    </div>
-  )
-}
-
-const SENSING_LABELS = { energy: '節能待機', instant: '即時感應' }
-
-function FunctionSettingPage({ onBack, setPage, sensingMode }) {
+function FunctionSettingPage({ onBack }) {
   const [offlineUnlock, setOfflineUnlock] = useState(true)
   const [sound,         setSound]         = useState(true)
   const [managePw,      setManagePw]      = useState(true)
   const [rental,        setRental]        = useState(true)
 
   const rows = [
-    { title: '感應模式',   sub: SENSING_LABELS[sensingMode],  trailing: 'arrow', onClick: () => setPage('sensing_mode') },
     { title: '離線解鎖',   sub: '離線時容許外部感應解鎖', trailing: [offlineUnlock, setOfflineUnlock] },
     { title: '音效',       sub: '電鈴、警示音不會被關閉', trailing: [sound, setSound] },
     { title: '管理密碼',   sub: '主機管理模式的密碼',     trailing: [managePw, setManagePw] },
@@ -2993,7 +2946,6 @@ export default function App() {
   const [selectedFace, setSelectedFace] = useState(null)
   const [selectedHand, setSelectedHand] = useState(null)
   const [pendingMkeyPin, setPendingMkeyPin] = useState('')
-  const [sensingMode, setSensingMode] = useState('energy')
   const [unlockMode, setUnlockMode] = useState(false)
   const [wifiNetwork, setWifiNetwork] = useState('')
   const [wifiConnected, setWifiConnected] = useState(false)
@@ -3018,8 +2970,7 @@ export default function App() {
             {page === 'wifi_card'         && <WifiCardPage setPage={setPage} setWifiConnected={setWifiConnected} />}
             {page === 'burn_wifi'         && <BurnWifiPage onBack={() => setPage('wifi_setting')} setPage={setPage} />}
             {page === 'burn_wifi_card'    && <BurnWifiCardPage setPage={setPage} />}
-            {page === 'function_setting'  && <FunctionSettingPage onBack={() => setPage('system_setting')} setPage={setPage} sensingMode={sensingMode} />}
-            {page === 'sensing_mode'      && <SensingModePage onBack={() => setPage('function_setting')} sensingMode={sensingMode} setSensingMode={setSensingMode} />}
+            {page === 'function_setting'  && <FunctionSettingPage onBack={() => setPage('system_setting')} />}
             {page === 'system_setting2'  && <SystemSetting2Page onBack={() => setPage('home')} setPage={setPage} />}
             {page === 'probe_addon'      && <ProbeAddonPage onBack={() => setPage('system_setting2')} setPage={setPage} />}
             {page === 'probe_setting'    && <ProbeSettingPage onBack={() => setPage('probe_addon')} setPage={setPage} />}
